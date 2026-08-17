@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const DiarioApp());
+void main() => runApp(const MyDiaryApp());
 
-class Habito {
-  final String nome;
-  final String meta;
-  final IconData icone;
+class Habit {
+  final String name;
+  final String goal;
+  final IconData icon;
 
-  const Habito(this.nome, this.meta, this.icone);
+  const Habit(this.name, this.goal, this.icon);
 }
 
-Future<List<Habito>> carregarHabitos() async {
+const Habits = [
+  Habit('Beber água', 'Meta: 8 copos por dia', Icons.local_drink),
+  Habit('Ler', 'Meta: 20 páginas por dia', Icons.menu_book),
+  Habit('Caminhar', 'Meta: 30 minutos por dia', Icons.directions_walk),
+  Habit('Dormir cedo', 'Meta: antes das 23h', Icons.bedtime),
+  Habit('Estudar programação', 'Meta: 2 horas por dia', Icons.computer),
+];
+
+Future<List<Habit>> fetchHabits() async {
   await Future.delayed(const Duration(seconds: 4));
-  return const [
-    Habito('Beber água', 'Meta: 8 copos por dia', Icons.local_drink),
-    Habito('Ler', 'Meta: 20 páginas por dia', Icons.menu_book),
-    Habito('Caminhar', 'Meta: 30 minutos por dia', Icons.directions_walk),
-    Habito('Dormir cedo', 'Meta: antes das 23h', Icons.bedtime),
-    Habito('Estudar programação', 'Meta: 2 horas por dia', Icons.computer),
-  ];
+  return Habits;
 }
 
-class TelaHabitos extends StatelessWidget {
-  const TelaHabitos({super.key, required this.futuro});
+class DisplayHabits extends StatelessWidget {
+  const DisplayHabits({super.key, required this.futureHabits});
 
-  final Future<List<Habito>> futuro;
+  final Future<List<Habit>> futureHabits;
 
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(title: const Text('Meus Hábitos')),
-    body: FutureBuilder<List<Habito>>(
-      future: futuro,
+    body: FutureBuilder<List<Habit>>(
+      future: futureHabits,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
           return const Center(child: CircularProgressIndicator());
@@ -38,17 +40,17 @@ class TelaHabitos extends StatelessWidget {
         if (snapshot.hasError) {
           return const Center(child: Text('Não foi possível carregar'));
         }
-        final habitos = snapshot.data!;
-        if (habitos.isEmpty) {
+        final Habits = snapshot.data!;
+        if (Habits.isEmpty) {
           return const Center(child: Text('Nenhum hábito ainda'));
         }
         return ListView(
           children: [
-            for (final h in habitos)
+            for (final h in Habits)
               ListTile(
-                leading: Icon(h.icone),
-                title: Text(h.nome),
-                subtitle: Text(h.meta),
+                leading: Icon(h.icon),
+                title: Text(h.name),
+                subtitle: Text(h.goal),
               ),
           ],
         );
@@ -57,12 +59,12 @@ class TelaHabitos extends StatelessWidget {
   );
 }
 
-class DiarioApp extends StatelessWidget {
-  const DiarioApp({super.key});
+class MyDiaryApp extends StatelessWidget {
+  const MyDiaryApp({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Diário de Hábitos',
-    home: TelaHabitos(futuro: carregarHabitos()),
+    home: DisplayHabits(futureHabits: fetchHabits()),
   );
 }
