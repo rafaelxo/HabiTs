@@ -10,13 +10,52 @@ class Habito {
   const Habito(this.nome, this.meta, this.icone);
 }
 
-const habitos = [
-  Habito('Beber água', 'Meta: 8 copos por dia', Icons.local_drink),
-  Habito('Ler', 'Meta: 20 páginas por dia', Icons.menu_book),
-  Habito('Caminhar', 'Meta: 30 minutos por dia', Icons.directions_walk),
-  Habito('Dormir cedo', 'Meta: antes das 23h', Icons.bedtime),
-  Habito('Estudar programação', 'Meta: 2 horas por dia', Icons.computer),
-];
+Future<List<Habito>> carregarHabitos() async {
+  await Future.delayed(const Duration(seconds: 4));
+  return const [
+    Habito('Beber água', 'Meta: 8 copos por dia', Icons.local_drink),
+    Habito('Ler', 'Meta: 20 páginas por dia', Icons.menu_book),
+    Habito('Caminhar', 'Meta: 30 minutos por dia', Icons.directions_walk),
+    Habito('Dormir cedo', 'Meta: antes das 23h', Icons.bedtime),
+    Habito('Estudar programação', 'Meta: 2 horas por dia', Icons.computer),
+  ];
+}
+
+class TelaHabitos extends StatelessWidget {
+  const TelaHabitos({super.key, required this.futuro});
+
+  final Future<List<Habito>> futuro;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Meus Hábitos')),
+    body: FutureBuilder<List<Habito>>(
+      future: futuro,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return const Center(child: Text('Não foi possível carregar'));
+        }
+        final habitos = snapshot.data!;
+        if (habitos.isEmpty) {
+          return const Center(child: Text('Nenhum hábito ainda'));
+        }
+        return ListView(
+          children: [
+            for (final h in habitos)
+              ListTile(
+                leading: Icon(h.icone),
+                title: Text(h.nome),
+                subtitle: Text(h.meta),
+              ),
+          ],
+        );
+      },
+    ),
+  );
+}
 
 class DiarioApp extends StatelessWidget {
   const DiarioApp({super.key});
@@ -24,18 +63,6 @@ class DiarioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Diário de Hábitos',
-    home: Scaffold(
-      appBar: AppBar(title: const Text('Meus Hábitos')),
-      body: ListView(
-        children: [
-          for (final h in habitos)
-            ListTile(
-              leading: Icon(h.icone),
-              title: Text(h.nome),
-              subtitle: Text(h.meta),
-            ),
-        ],
-      ),
-    ),
+    home: TelaHabitos(futuro: carregarHabitos()),
   );
 }
