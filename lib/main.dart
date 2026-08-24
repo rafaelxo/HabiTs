@@ -23,10 +23,13 @@ class MyDiaryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     // MaterialApp: widget que habilita navegação, temas e rotas do Material Design
     return MaterialApp(
+
       // ThemeData: define o tema visual global (cores, fontes, formas)
       theme: ThemeData(
+
         // ColorScheme.fromSeed: gera automaticamente uma paleta de cores harmoniosa
         // a partir de uma cor semente (seedColor)
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1A5276)),
@@ -50,15 +53,18 @@ class HabitDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     // Theme.of(context): acessa o tema definido no MaterialApp mais próximo na árvore
     // colorScheme: paleta de cores gerada pelo ThemeData
     final colors = Theme.of(context).colorScheme;
+
     // textTheme: conjunto de estilos de texto pré-definidos (titleLarge, bodyMedium, etc.)
     final texts = Theme.of(context).textTheme;
 
     // Scaffold: estrutura básica de uma tela Material Design
     // Fornece AppBar, body, FAB, Drawer, SnackBar, etc.
     return Scaffold(
+
       // AppBar: barra superior da tela com título e ações
       appBar: AppBar(
         title: Text(habit.name), // Exibe o nome do hábito como título
@@ -71,14 +77,17 @@ class HabitDetailsScreen extends StatelessWidget {
       // SingleChildScrollView: torna o conteúdo rolável quando ele ultrapassa
       // a altura da tela — evita overflow (estouro de conteúdo)
       body: SingleChildScrollView(
+
         // Column: organiza os filhos verticalmente, um abaixo do outro
         child: Column(
+
           // CrossAxisAlignment.stretch: estica cada filho horizontalmente
           // para ocupar toda a largura disponível da Column
+
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
 
-            // --- 1. BANNER SUPERIOR (ícone + nome + meta) ---
+            // BANNER SUPERIOR (ícone + nome + meta)
             // Container: caixa genérica para aplicar cor, padding, tamanho e decorações
             Container(
               width: double.infinity, // Ocupa toda a largura disponível
@@ -91,15 +100,17 @@ class HabitDetailsScreen extends StatelessWidget {
               // Row: organiza os filhos horizontalmente, lado a lado
               child: Row(
                 children: [
+
                   // CircleAvatar: widget circular, geralmente usado para avatares/ícones
                   // O externo serve como borda (backgroundColor = surface)
                   CircleAvatar(
-                    radius: 34,
-                    backgroundColor: colors.surface,
+                    radius: 34, // Raio do círculo externo — define o tamanho da borda
+                    backgroundColor: colors.surface, // Cor de borda: contrasta com o fundo primary
+
                     // CircleAvatar interno: contém o ícone do hábito
                     child: CircleAvatar(
-                      radius: 30,
-                      backgroundColor: colors.primaryContainer,
+                      radius: 30, // Raio menor que o externo, criando o efeito de borda
+                      backgroundColor: colors.primaryContainer, // Fundo do container do ícone
                       child: Icon(
                         habit.icon,
                         size: 32,
@@ -120,19 +131,24 @@ class HabitDetailsScreen extends StatelessWidget {
                       children: [
                         Text(
                           habit.name,
+
                           // style: define o estilo visual do texto
                           // texts.titleLarge: estilo grande de título do tema
                           // .copyWith: copia o estilo base e sobrescreve propriedades específicas
                           style: texts.titleLarge?.copyWith(
-                            color: colors.onPrimary,     // Cor que contrasta com primary
-                            fontWeight: FontWeight.bold,
+                            color: colors.onPrimary,          // Cor que contrasta com primary
+                            fontWeight: FontWeight.bold,       // Deixa o texto em negrito
                           ),
                         ),
+
                         const SizedBox(height: 8), // Espaço vertical de 8px
+
                         Text(
                           habit.goal,
+
+                          // titleMedium: estilo de título médio, menor que titleLarge
                           style: texts.titleMedium?.copyWith(
-                            color: colors.onPrimary,
+                            color: colors.onPrimary, // Cor legível sobre o fundo primary
                           ),
                         ),
                       ],
@@ -144,38 +160,47 @@ class HabitDetailsScreen extends StatelessWidget {
 
             const SizedBox(height: 20), // Espaço vertical entre seções
 
-            // --- 2. CARDS DE ESTATÍSTICAS (Ofensiva / Diária / Mensal) ---
+            // CARDS DE ESTATÍSTICAS (Ofensiva / Diária / Mensal)
             // Padding: adiciona espaço interno ao redor do seu filho
             // EdgeInsets.symmetric(horizontal): só aplica nas laterais (esquerda e direita)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
+
               // Row com três Cards de estatísticas lado a lado
               child: Row(
                 children: [
 
                   // Expanded: cada Card ocupa 1/3 igual do espaço horizontal da Row
                   Expanded(
+
                     // Card: widget que aplica sombra, borda arredondada e cor de superfície
                     // Cria o visual de "cartão" do Material Design
                     child: Card(
+
                       // Padding interno do Card para não colar o conteúdo nas bordas
                       child: Padding(
+
                         // EdgeInsets.symmetric(vertical): aplica só em cima e embaixo
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
+
+                        // Column sem crossAxisAlignment = centraliza os filhos por padrão
                         child: Column(
                           children: [
+
+                            // Valor principal do card em destaque
                             Text(
                               '12 dias',
                               style: texts.titleLarge?.copyWith(
-                                color: colors.primary,
-                                fontWeight: FontWeight.bold,
+                                color: colors.primary,      // Usa a cor primária para destaque
+                                fontWeight: FontWeight.bold, // Negrito para chamar atenção
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 4), // Pequeno espaço entre valor e rótulo
+                            // bodySmall: menor estilo de texto do tema, ideal para rótulos
                             Text(
                               'Ofensiva',
                               style: texts.bodySmall?.copyWith(
-                                color: colors.onSurface,
+                                color: colors.onSurface, // Cor neutra de leitura
                               ),
                             ),
                           ],
@@ -184,24 +209,31 @@ class HabitDetailsScreen extends StatelessWidget {
                     ),
                   ),
 
+                  // Expanded: 2º card ocupa mais 1/3 do espaço horizontal da Row
                   Expanded(
                     child: Card(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
+
+                        // Column sem crossAxisAlignment = centraliza os filhos por padrão
                         child: Column(
                           children: [
+
+                            // Valor principal do card em destaque
                             Text(
-                              '6 / 8',
+                              '6 / 8', // Progresso do dia: copos bebidos / meta
                               style: texts.titleLarge?.copyWith(
-                                color: colors.primary,
-                                fontWeight: FontWeight.bold,
+                                color: colors.primary,       // Usa a cor primária para destaque
+                                fontWeight: FontWeight.bold,  // Negrito para chamar atenção
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 4), // Pequeno espaço entre valor e rótulo
+
+                            // bodySmall: menor estilo de texto do tema, ideal para rótulos
                             Text(
                               'Diária',
                               style: texts.bodySmall?.copyWith(
-                                color: colors.onSurface,
+                                color: colors.onSurface, // Cor neutra de leitura
                               ),
                             ),
                           ],
@@ -210,24 +242,30 @@ class HabitDetailsScreen extends StatelessWidget {
                     ),
                   ),
 
+                  // Expanded: 3º card ocupa o último 1/3 do espaço horizontal da Row
                   Expanded(
                     child: Card(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
+
+                        // Column sem crossAxisAlignment = centraliza os filhos por padrão
                         child: Column(
                           children: [
+                            
+                            // Valor principal do card em destaque
                             Text(
-                              '62%',
+                              '62%', // Taxa de conclusão mensal do hábito
                               style: texts.titleLarge?.copyWith(
-                                color: colors.primary,
-                                fontWeight: FontWeight.bold,
+                                color: colors.primary,       // Usa a cor primária para destaque
+                                fontWeight: FontWeight.bold,  // Negrito para chamar atenção
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 4), // Pequeno espaço entre valor e rótulo
+                            // bodySmall: menor estilo de texto do tema, ideal para rótulos
                             Text(
                               'Mensal',
                               style: texts.bodySmall?.copyWith(
-                                color: colors.onSurface,
+                                color: colors.onSurface, // Cor neutra de leitura
                               ),
                             ),
                           ],
@@ -241,12 +279,14 @@ class HabitDetailsScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // --- 3. CARD COM BLOCO DE TEXTO ("Sobre o hábito") ---
+            // CARD COM BLOCO DE TEXTO ("Sobre o hábito")
             // Padding: recua o Card 16px de cada lado para não encostar nas bordas da tela
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
+
               // Card: cria o visual de cartão com sombra e bordas arredondadas
               child: Card(
+
                 // Padding interno: EdgeInsets.all aplica o mesmo espaço nos 4 lados
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -255,15 +295,17 @@ class HabitDetailsScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Sobre o hábito',
+
                         // style: usa o estilo titleMedium do tema e sobrescreve cor e peso
                         style: texts.titleMedium?.copyWith(
-                          color: colors.primary,
-                          fontWeight: FontWeight.bold,
+                          color: colors.primary,       // Destaca o título com a cor primária
+                          fontWeight: FontWeight.bold,  // Negrito para separar do corpo do texto
                         ),
                       ),
                       const SizedBox(height: 12),
                       Text(
                         'A consistência é a chave para o sucesso. Manter um acompanhamento diário ajuda a solidificar este hábito na sua rotina. Continue se esforçando e não desanime se perder um dia!',
+
                         // bodyMedium: estilo padrão para textos de conteúdo/corpo
                         style: texts.bodyMedium?.copyWith(
                           color: colors.onSurface, // Cor legível sobre a superfície do Card
