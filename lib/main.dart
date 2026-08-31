@@ -301,7 +301,9 @@ class HabitDetailsScreen extends StatelessWidget {
                           fontWeight: FontWeight.bold,  // Negrito para separar do corpo do texto
                         ),
                       ),
+
                       const SizedBox(height: 12),
+                      
                       Text(
                         'A consistência é a chave para o sucesso. Manter um acompanhamento diário ajuda a solidificar este hábito na sua rotina. Continue se esforçando e não desanime se perder um dia!',
 
