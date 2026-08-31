@@ -83,7 +83,6 @@ class HabitDetailsScreen extends StatelessWidget {
 
           // CrossAxisAlignment.stretch: estica cada filho horizontalmente
           // para ocupar toda a largura disponível da Column
-
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
 
@@ -251,7 +250,7 @@ class HabitDetailsScreen extends StatelessWidget {
                         // Column sem crossAxisAlignment = centraliza os filhos por padrão
                         child: Column(
                           children: [
-                            
+
                             // Valor principal do card em destaque
                             Text(
                               '62%', // Taxa de conclusão mensal do hábito
