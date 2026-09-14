@@ -1,85 +1,112 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const AppReceitas());
+import 'tela_novo_habito.dart';
 
-class Receita {
-  final String titulo;
-  final String origem;
-  final int tempo;
+void main() => runApp(const MeuDiarioApp());
+
+class Habito {
+  final String nome;
+  final String meta;
   final IconData icone;
 
-  const Receita(this.titulo, this.origem, this.tempo, this.icone);
+  const Habito(this.nome, this.meta, this.icone);
 }
 
-const receitas = [
-  Receita('Pão de queijo', 'Minas Gerais', 40, Icons.bakery_dining),
-  Receita('Moqueca', 'Bahia', 55, Icons.set_meal),
-  Receita('Arroz carreteiro', 'Rio Grande do Sul', 35, Icons.rice_bowl),
+const habitosIniciais = [
+  Habito('Beber água', 'Meta: 8 copos por dia', Icons.local_drink),
+  Habito('Ler', 'Meta: 20 páginas por dia', Icons.menu_book),
+  Habito('Caminhar', 'Meta: 30 minutos por dia', Icons.directions_walk),
+  Habito('Dormir cedo', 'Meta: antes das 23h', Icons.bedtime),
+  Habito('Estudar programação', 'Meta: 2 horas por dia', Icons.computer),
 ];
 
-class TelaReceitas extends StatelessWidget {
-  const TelaReceitas({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final cores = Theme.of(context).colorScheme;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Receitas'),
-        actions: [
-          IconButton(icon: const Icon(Icons.search),
-          onPressed: () {})
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            color: cores.primaryContainer,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Text(
-              '${receitas.length} receitas',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: cores.onPrimaryContainer,
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: receitas.length,
-              separatorBuilder: (context, i) => const Divider(height: 1),
-              itemBuilder: (context, i) {
-                final r = receitas[i];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: cores.primaryContainer,
-                    child: Icon(r.icone, color: cores.primary),
-                  ),
-                  title: Text(r.titulo),
-                  subtitle: Text('${r.origem} · ${r.tempo} minutos')
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
+Future<List<Habito>> carregarHabitos() async {
+  try {
+    await Future.delayed(const Duration(seconds: 2));
+    return habitosIniciais;
+  } catch (e) {
+    throw Exception('Erro ao carregar hábitos: $e');
   }
 }
 
-class AppReceitas extends StatelessWidget {
-  const AppReceitas({super.key});
+class MeuDiarioApp extends StatelessWidget {
+  const MeuDiarioApp({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'Receitas App',
-    debugShowCheckedModeBanner: false,
+    title: 'Diário de Hábitos',
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1A5276)),
       useMaterial3: true,
     ),
-    home: const TelaReceitas(),
+    home: TelaHabitos(habitosFuturos: carregarHabitos()),
+  );
+}
+
+class TelaHabitos extends StatefulWidget {
+  const TelaHabitos({super.key, required this.habitosFuturos});
+
+  final Future<List<Habito>> habitosFuturos;
+
+  @override
+  State<TelaHabitos> createState() => _TelaHabitosState();
+}
+
+class _TelaHabitosState extends State<TelaHabitos> {
+  List<Habito> _habitos = [];
+  bool _carregando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.habitosFuturos
+        .then((habitosCarregados) {
+          setState(() {
+            _habitos = List.from(habitosCarregados);
+            _carregando = false;
+          });
+        })
+        .catchError((_) {
+          setState(() {
+            _carregando = false;
+          });
+        });
+  }
+
+  Future<void> _abrirNovoHabito() async {
+    final novo = await Navigator.push<Habito>(
+      context,
+      MaterialPageRoute(builder: (_) => const TelaNovoHabito()),
+    );
+
+    if (!mounted) return;
+    if (novo != null) {
+      setState(() => _habitos.add(novo));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Meus Hábitos')),
+    body: _carregando
+        ? const Center(child: CircularProgressIndicator())
+        : _habitos.isEmpty
+        ? const Center(child: Text('Nenhum hábito cadastrado'))
+        : ListView.separated(
+            itemCount: _habitos.length,
+            separatorBuilder: (context, i) => const Divider(height: 1),
+            itemBuilder: (context, i) {
+              final h = _habitos[i];
+              return ListTile(
+                leading: Icon(h.icone),
+                title: Text(h.nome),
+                subtitle: Text(h.meta),
+              );
+            },
+          ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: _abrirNovoHabito,
+      child: const Icon(Icons.add),
+    ),
   );
 }
