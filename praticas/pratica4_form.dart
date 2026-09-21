@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'main.dart';
+import '../praticas/pratica4_main.dart';
 
 class TelaNovoHabito extends StatefulWidget {
   const TelaNovoHabito({super.key});
