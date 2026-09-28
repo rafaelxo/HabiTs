@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../macos/pratica5_store.dart';
-import 'pratica5_form.dart';
+import 'store.dart';
+import 'form.dart';
 
 void main() => runApp(
   ChangeNotifierProvider(
