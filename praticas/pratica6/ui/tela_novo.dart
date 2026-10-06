@@ -53,8 +53,9 @@ class _TelaNovoHabitoState extends State<TelaNovoHabito> {
                 border: OutlineInputBorder(),
               ),
               validator: (valor) {
-                if (valor == null || valor.trim().isEmpty)
+                if (valor == null || valor.trim().isEmpty) {
                   return 'Informe o nome';
+                }
                 if (valor.trim().length < 3) return 'Use ao menos 3 letras';
                 return null;
               },
@@ -67,8 +68,9 @@ class _TelaNovoHabitoState extends State<TelaNovoHabito> {
                 border: OutlineInputBorder(),
               ),
               validator: (valor) {
-                if (valor == null || valor.trim().isEmpty)
+                if (valor == null || valor.trim().isEmpty) {
                   return 'Informe a meta';
+                }
                 return null;
               },
             ),
